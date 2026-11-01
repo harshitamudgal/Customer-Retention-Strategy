@@ -271,10 +271,8 @@ SELECT
     SUM(promo_dependent)                                   AS promo_orders,
     ROUND(SUM(promo_dependent) * 100.0 / COUNT(*), 1)     AS promo_rate_pct,
     ROUND(AVG(purchase_amount_usd), 2)                     AS avg_spend,
-    ROUND(AVG(purchase_amount_usd) 
-        FILTER (WHERE promo_dependent = 0), 2)             AS avg_spend_no_promo,
-    ROUND(AVG(purchase_amount_usd)
-        FILTER (WHERE promo_dependent = 1), 2)             AS avg_spend_with_promo
+    ROUND(AVG(CASE WHEN promo_dependent = 0 THEN purchase_amount_usd END), 2) AS avg_spend_no_promo,
+    ROUND(AVG(CASE WHEN promo_dependent = 1 THEN purchase_amount_usd END), 2) AS avg_spend_with_promo
 FROM customers
 GROUP BY season
 ORDER BY promo_rate_pct DESC;
